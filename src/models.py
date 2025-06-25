@@ -12,7 +12,7 @@ class User(db.Model, UserMixin):
 
 class Job(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer)  # Link to logged in user
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     command = db.Column(db.String, nullable=False)
     status = db.Column(db.String, default='submitted')
     output = db.Column(db.Text)

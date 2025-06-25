@@ -5,7 +5,7 @@ import time
 from queue import Queue
 from datetime import datetime, timezone
 from . import db
-from models import Job
+from .models import Job
 
 LOG_DIR = "logs"
 os.makedirs(LOG_DIR, exist_ok=True)

@@ -4,7 +4,7 @@ from flask_login import login_required, current_user, login_user, logout_user, L
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .models import User, Job
-from . import db
+from . import db, executor
 
 view_routes = Blueprint("views", __name__)
 login_manager = LoginManager()
@@ -19,16 +19,14 @@ def initialize_login(app):
 def load_user(id):
     return User.query.get(int(id))
 
-@view_routes.route('/submit', methods=['POST'])
+@view_routes.route("/submit", method=["POST"])
 def submit_job():
     command = request.form['command']
-    user_id = current_user.id
-
-    job = Job(command=command, user_id=user_id)
+    job = Job(command=command, status='submitted', user_id=1)
     db.session.add(job)
     db.session.commit()
 
-    execute_job.delay(job.id)
+    executor.submit(job.id, command)
     return redirect('/jobs')
 
 @view_routes.route("/")

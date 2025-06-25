@@ -3,7 +3,7 @@ from flask_login import login_required, current_user, login_user, logout_user, L
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from .models import User, UserType
+from .models import User, Job
 from . import db
 
 view_routes = Blueprint("views", __name__)
@@ -19,13 +19,24 @@ def initialize_login(app):
 def load_user(id):
     return User.query.get(int(id))
 
+@view_routes.route('/submit', methods=['POST'])
+def submit_job():
+    command = request.form['command']
+    user_id = current_user.id
+
+    job = Job(command=command, user_id=user_id)
+    db.session.add(job)
+    db.session.commit()
+
+    execute_job.delay(job.id)
+    return redirect('/jobs')
 
 @view_routes.route("/")
 @login_required
-def index():
-    first_name = current_user.first_name
-    last_name = current_user.last_name
-    return render_template("index.html", first_name=first_name, last_name=last_name)
+def jobs():
+    user_id = current_user.id
+    jobs = Job.query.filter_by(user_id=user_id).order_by(Job.created_at.desc()).all()
+    return render_template('jobs.html', jobs=jobs)
 
 
 @view_routes.route("/login", methods=["GET", "POST"])

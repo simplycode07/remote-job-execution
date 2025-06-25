@@ -88,6 +88,7 @@
     <div class="nav-links">
         {% if current_user.is_authenticated %}
             <a href="{{ url_for('views.logout') }}">Logout</a>
+            <a href="{{ url_for('views.jobs') }}">Jobs</a>
         {% else %}
             <a href="{{ url_for('views.login') }}">Login</a>
             <a href="{{ url_for('views.signup') }}">Signup</a>

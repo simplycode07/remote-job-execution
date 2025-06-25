@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+<form method="post" action="/submit">
+  <input name="command" placeholder="Enter command">
+  <button type="submit">Submit Job</button>
+</form>
+
+<h3>Your Jobs</h3>
+<ul>
+  {% for job in jobs %}
+    <li><strong>{{ job.command }}</strong> | {{ job.status }}<br>{{ job.output or '' }}</li>
+  {% endfor %}
+</ul>
